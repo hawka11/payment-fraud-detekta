@@ -1,0 +1,26 @@
+
+- file: path=/neo4jdata/ state=directory
+- file: path=/neo4jdata/data state=directory
+- file: path=/neo4jdata/logs state=directory
+
+- name: neo4j container
+  docker:
+    name: neo4j
+    image: neo4j:3.0
+    state: started
+    ports:
+     - 7474:7474
+     - 7687:7687
+    volumes:
+      - /neo4jdata/data:/data
+      - /neo4jdata/logs:/logs
+
+- name: Set neo4j password
+  uri:
+    url: http://localhost:7474/user/neo4j/password
+    method: POST
+    user: neo4j
+    password: neo4j
+    body: "{ 'password' : 'fraud' }"
+    force_basic_auth: yes
+    body_format: json

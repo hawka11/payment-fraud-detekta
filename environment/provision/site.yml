@@ -1,0 +1,5 @@
+- hosts: neo4j
+  become: true
+  roles:
+    - docker
+    - neo4j

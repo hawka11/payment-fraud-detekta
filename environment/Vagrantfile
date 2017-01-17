@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+    config.vm.define "neo4j" do |neo4j|
+        # boxes at https://atlas.hashicorp.com/search.
+        neo4j.vm.box = "oar-team/centos7"
+        neo4j.vm.hostname = "neo4j"
+        neo4j.vm.box_download_insecure=true
+
+        neo4j.vm.network :private_network, ip: "10.0.10.50"
+
+        neo4j.vm.network "forwarded_port", guest: 7474, host: 7474
+
+        neo4j.ssh.insert_key = false
+        neo4j.vm.synced_folder "./", "/vagrant"
+
+        neo4j.vm.provider "virtualbox" do |v|
+            v.memory = 4096
+            v.cpus = 8
+        end
+
+    end
+
+end

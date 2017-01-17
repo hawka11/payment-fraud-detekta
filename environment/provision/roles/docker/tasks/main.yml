@@ -1,0 +1,16 @@
+
+- name: Install PIP
+  easy_install: name=pip state=latest
+
+- pip:
+    name: docker-py
+
+- template: src=../templates/docker.repo.j2 dest=/etc/yum.repos.d/docker.repo
+
+- yum:
+    name: docker-engine
+    state: latest
+
+- command: systemctl enable docker.service
+
+- command: systemctl start docker
