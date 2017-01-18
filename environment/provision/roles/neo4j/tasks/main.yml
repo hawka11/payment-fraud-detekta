@@ -17,10 +17,10 @@
 
 - name: Set neo4j password
   uri:
-    url: http://localhost:7474/user/neo4j/password
+    url: http://10.0.10.50:7474/user/neo4j/password
     method: POST
     user: neo4j
     password: neo4j
-    body: "{ 'password' : 'fraud' }"
+    body: "{ \"password\" : \"fraud\" }"
     force_basic_auth: yes
     body_format: json
