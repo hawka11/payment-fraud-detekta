@@ -1,0 +1,17 @@
+apply plugin: "kotlin"
+
+dependencies {
+    compile(
+            "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}",
+
+            "co.paralleluniverse:quasar-core:${quasarVersion}:jdk8",
+            "co.paralleluniverse:quasar-actors:${quasarVersion}",
+            "co.paralleluniverse:quasar-kotlin:${quasarVersion}",
+
+            "net.iot-solutions.graphdb:jcypher:3.6.0"
+    )
+
+    testCompile(
+            "junit:junit:4.12"
+    )
+}

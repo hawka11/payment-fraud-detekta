@@ -1,0 +1,33 @@
+buildscript {
+    ext {
+        nexus = {
+            credentials {
+                username nexusBuildUserToken
+                password nexusBuildPassToken
+            }
+            url nexusRepoURL
+        }
+    }
+
+    repositories {
+        maven(nexus)
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath(
+                "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
+        )
+    }
+}
+
+allprojects {
+
+    group 'payment-fraud-detekta'
+    version '1.0-SNAPSHOT'
+
+    repositories {
+        maven(nexus)
+        mavenCentral()
+    }
+}
