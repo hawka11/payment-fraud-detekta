@@ -1,54 +1,58 @@
 package detekta.payment.ingester
 
-import iot.jcypher.database.DBAccessFactory
-import iot.jcypher.database.DBProperties.SERVER_ROOT_URI
-import iot.jcypher.database.DBType.REMOTE
-import iot.jcypher.database.IDBAccess
-import iot.jcypher.query.JcQuery
-import iot.jcypher.query.factories.clause.CREATE
-import iot.jcypher.query.factories.clause.MATCH
-import iot.jcypher.query.factories.clause.RETURN
-import iot.jcypher.query.values.JcNode
-import java.util.*
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
+import iot.jcypher.graph.GrNode
+import iot.jcypher.graph.Graph
 
 fun main(args: Array<String>) {
 
+    val mapper = objectMapper()
     val neo4j = neo4jDb()
+    val graph = Graph.create(neo4j)
 
-    insertPayments(neo4j)
-
-    exportAndPrintTomHanks(neo4j)
+    LoadInitialNeo4jData().loadPayments(graph, mapper)
 }
 
-private fun neo4jDb(): IDBAccess {
-    val props = Properties()
-    props.setProperty(SERVER_ROOT_URI, "http://10.0.10.50:7474")
-    return DBAccessFactory.createDBAccess(REMOTE, props, "neo4j", "fraud")
-}
+class LoadInitialNeo4jData {
 
-private fun insertPayments(neo4j: IDBAccess) {
-    val token = JcNode("token123")
+    private val customerNodeByCode = hashMapOf<String, GrNode>()
 
-    val query = JcQuery()
-    query.clauses = arrayOf(
-            CREATE.node(token).label("Token").property("token").value("123")
-    )
+    fun loadPayments(graph: Graph, mapper: ObjectMapper) {
 
-    val r = neo4j.execute(query)
+        val resultsFile = javaClass.classLoader.getResource("paymentResults.json")
+        val results: List<PaymentResult> =
+                mapper.readValue(resultsFile, object : TypeReference<List<PaymentResult>>() {})
 
-    println(r.jsonResult)
-}
+        loadPaymentResults(graph, results)
+    }
 
-private fun exportAndPrintTomHanks(neo4j: IDBAccess) {
-    //"MATCH (tom {name: "Tom Hanks"}) RETURN tom"
-    val person = JcNode("person")
-    val hanks = MATCH.node(person).property("name").value("Tom Hanks")
-    val returnHanks = RETURN.value(person)//.property("graph"))
+    private fun loadPaymentResults(graph: Graph, results: List<PaymentResult>) {
+        results.forEach {
 
-    val query = JcQuery()
-    query.clauses = arrayOf(hanks, returnHanks)
+            val customer = getOrCreateCustomer(graph, it.customerCode)
+            val resultNode = graph.createNode()
 
-    val r = neo4j.execute(query)
+            resultNode.addLabel("Token")
+            resultNode.addProperty("token", it.token)
+            resultNode.addProperty("status", it.status)
+            resultNode.addProperty("createdAt", it.createdAt)
+            resultNode.addProperty("unitAmount", it.unitAmount)
+            resultNode.addProperty("ipAddress", it.ipAddress)
 
-    println(r.jsonResult)
+            graph.createRelation("ATTEMPTED_PAYMENT", customer, resultNode)
+
+            graph.store()
+        }
+    }
+
+    private fun getOrCreateCustomer(graph: Graph, customerCode: String): GrNode {
+        if (!customerNodeByCode.containsKey(customerCode)) {
+            val customer = graph.createNode()
+            customer.addLabel("Customer")
+            customer.addProperty("code", customerCode)
+            customerNodeByCode[customerCode] = customer
+        }
+        return customerNodeByCode[customerCode]!!
+    }
 }

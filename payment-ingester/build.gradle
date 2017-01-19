@@ -8,7 +8,10 @@ dependencies {
             "co.paralleluniverse:quasar-actors:${quasarVersion}",
             "co.paralleluniverse:quasar-kotlin:${quasarVersion}",
 
-            "net.iot-solutions.graphdb:jcypher:3.6.0"
+            "net.iot-solutions.graphdb:jcypher:3.6.0",
+            "com.fasterxml.jackson.core:jackson-core:2.8.6",
+            "com.fasterxml.jackson.core:jackson-databind:2.8.6",
+            "com.fasterxml.jackson.module:jackson-module-kotlin:2.8.4"
     )
 
     testCompile(
