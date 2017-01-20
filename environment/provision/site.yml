@@ -1,5 +1,18 @@
-- hosts: neo4j
+- hosts: docker
   become: true
+  tags: docker
   roles:
     - docker
+
+- hosts: neo4j
+  become: true
+  tags: neo4j
+  roles:
     - neo4j
+
+- hosts: zookeeper
+  become: true
+  tags: zookeeper
+  roles:
+    - java8
+    - zookeeper

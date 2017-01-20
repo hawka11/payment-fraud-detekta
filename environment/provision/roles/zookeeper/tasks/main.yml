@@ -1,0 +1,35 @@
+
+- unarchive:
+    src: ../files/zookeeper-3.4.9.tar.gz
+    dest: /opt/
+    owner: vagrant
+
+- file:
+    src: /opt/zookeeper-3.4.9
+    dest: /opt/zookeeper
+    state: link
+    owner: vagrant
+
+- template:
+    src: ../templates/zoo.cfg.j2
+    dest: /opt/zookeeper/conf/zoo.cfg
+    owner: vagrant
+
+- file:
+    path: /var/lib/zookeeper
+    state: directory
+    mode: 0777
+    owner: vagrant
+
+- name: Allow public to port 2181 in firewall 
+  shell: firewall-cmd --zone=public --add-port=2181/tcp --permanent  
+
+- name: Reload firewall 
+  shell: firewall-cmd --reload  
+
+- name: Flush iptables 
+  shell: iptables -F
+
+# ./bin/zkServer.sh start
+# ./bin/zkServer.sh stop
+# ./bin/zkCli.sh -server 127.0.0.1:2181

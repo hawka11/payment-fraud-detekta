@@ -1,0 +1,10 @@
+
+- stat: path=/vagrant/provision/roles/java8/files/jdk-8u91-linux-x64.rpm
+  register: isDownloaded
+
+- name: Download java8 (if not already)
+  command: 'wget -P /vagrant/provision/roles/java8/files/ --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u91-b14/jdk-8u91-linux-x64.rpm"'
+  when: isDownloaded.stat.exists == False
+
+- name: Install java8
+  yum: name=/vagrant/provision/roles/java8/files/jdk-8u91-linux-x64.rpm state=present
