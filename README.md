@@ -19,3 +19,8 @@ login with
 ```
 neo4j/fraud
 ```
+
+setup local multicast on mac
+```commandline
+sudo route -nv add -net 228.0.0.4 -interface <interface>
+```

@@ -1,3 +1,8 @@
 .vagrant
 .idea
 *.iml
+classes
+build
+*.rpm
+*.tar.gz
+*.retry
