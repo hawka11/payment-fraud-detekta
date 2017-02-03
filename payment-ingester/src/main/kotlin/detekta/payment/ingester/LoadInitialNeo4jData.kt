@@ -20,7 +20,7 @@ class LoadInitialNeo4jData {
 
     fun loadPayments(graph: Graph, mapper: ObjectMapper) {
 
-        val resultsFile = javaClass.classLoader.getResource("paymentResults.json")
+        val resultsFile = javaClass.classLoader.getResource("import/paymentresults/paymentResults.json")
         val results: List<PaymentResult> =
                 mapper.readValue(resultsFile, object : TypeReference<List<PaymentResult>>() {})
 
