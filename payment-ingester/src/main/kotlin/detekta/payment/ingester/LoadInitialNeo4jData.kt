@@ -17,6 +17,9 @@ fun main(args: Array<String>) {
 class LoadInitialNeo4jData {
 
     private val customerNodeByCode = hashMapOf<String, GrNode>()
+    private val tokenNodeByToken = hashMapOf<String, GrNode>()
+    private val ipNodeByIp = hashMapOf<String, GrNode>()
+    private val paymentNodeById = hashMapOf<String, GrNode>()
 
     fun loadPayments(graph: Graph, mapper: ObjectMapper) {
 
@@ -30,29 +33,73 @@ class LoadInitialNeo4jData {
     private fun loadPaymentResults(graph: Graph, results: List<PaymentResult>) {
         results.forEach {
 
-            val customer = getOrCreateCustomer(graph, it.customerCode)
-            val resultNode = graph.createNode()
+            val customer = getOrCreateCustomer(graph, it)
+            val paymentNode = getOrCreatePayment(graph, it)
+            val tokenNode = getOrCreateToken(graph, it)
+            val ipNode = getOrCreateIpAddress(graph, it)
 
-            resultNode.addLabel("Token")
-            resultNode.addProperty("token", it.token)
-            resultNode.addProperty("status", it.status)
-            resultNode.addProperty("createdAt", it.createdAt)
-            resultNode.addProperty("unitAmount", it.unitAmount)
-            resultNode.addProperty("ipAddress", it.ipAddress)
-
-            graph.createRelation("ATTEMPTED_PAYMENT", customer, resultNode)
+            graph.createRelation("ATTEMPTED_PAYMENT", customer, paymentNode)
+            graph.createRelation("USING_TOKEN", paymentNode, tokenNode)
+            graph.createRelation("USING_IP", paymentNode, ipNode)
 
             graph.store()
         }
     }
 
-    private fun getOrCreateCustomer(graph: Graph, customerCode: String): GrNode {
-        if (!customerNodeByCode.containsKey(customerCode)) {
+    private fun getOrCreatePayment(graph: Graph, r: PaymentResult): GrNode {
+        if (!paymentNodeById.containsKey(r.correlationId)) {
+
+            val tokenNode = graph.createNode()
+
+            tokenNode.addLabel("Payment")
+            tokenNode.addProperty("status", r.status)
+            tokenNode.addProperty("createdAt", r.createdAt)
+            tokenNode.addProperty("unitAmount", r.unitAmount)
+            tokenNode.addProperty("correlationId", r.correlationId)
+
+            paymentNodeById[r.correlationId] = tokenNode
+        }
+
+        return paymentNodeById[r.correlationId]!!
+    }
+
+    private fun getOrCreateToken(graph: Graph, r: PaymentResult): GrNode {
+        if (!tokenNodeByToken.containsKey(r.token)) {
+
+            val tokenNode = graph.createNode()
+
+            tokenNode.addLabel("Token")
+            tokenNode.addProperty("token", r.token)
+            tokenNode.addProperty("status", r.status)
+            tokenNode.addProperty("createdAt", r.createdAt)
+            tokenNode.addProperty("unitAmount", r.unitAmount)
+            tokenNode.addProperty("ipAddress", r.ipAddress)
+
+            tokenNodeByToken[r.token] = tokenNode
+        }
+
+        return tokenNodeByToken[r.token]!!
+    }
+
+    private fun getOrCreateCustomer(graph: Graph, r: PaymentResult): GrNode {
+        if (!customerNodeByCode.containsKey(r.customerCode)) {
             val customer = graph.createNode()
             customer.addLabel("Customer")
-            customer.addProperty("code", customerCode)
-            customerNodeByCode[customerCode] = customer
+            customer.addProperty("code", r.customerCode)
+            customer.addProperty("createdAt", r.createdAt)
+            customerNodeByCode[r.customerCode] = customer
         }
-        return customerNodeByCode[customerCode]!!
+        return customerNodeByCode[r.customerCode]!!
+    }
+
+    private fun getOrCreateIpAddress(graph: Graph, r: PaymentResult): GrNode {
+        if (!ipNodeByIp.containsKey(r.ipAddress)) {
+            val customer = graph.createNode()
+            customer.addLabel("IpAddress")
+            customer.addProperty("ip", r.ipAddress)
+            customer.addProperty("createdAt", r.createdAt)
+            ipNodeByIp[r.ipAddress] = customer
+        }
+        return ipNodeByIp[r.ipAddress]!!
     }
 }
