@@ -28,13 +28,13 @@ class CustomerABCFraudCheckActor(neo4j: Neo4jFiberAware) : BasicActor<Any, Resol
         }
     }
 
+    //TODO: Nested / Recursive selective receive isn't working perfect, need to investigate...but this works
     fun waitForResponses(resp: List<ResolveResult>, remaining: Int): MessageProcessor<Any, List<ResolveResult>> {
         return MessageProcessor { msg: Any ->
-            if (remaining <= 0) resp else {
-                when (msg) {
-                    is ResolveResult -> receive(waitForResponses(resp + msg, remaining - 1))
-                    else -> receive(waitForResponses(resp, remaining))
-                }
+            when (msg) {
+                is ResolveResult -> if (remaining <= 1) resp + msg else
+                    receive(waitForResponses(resp + msg, remaining - 1))
+                else -> receive(waitForResponses(resp, remaining))
             }
         }
     }
