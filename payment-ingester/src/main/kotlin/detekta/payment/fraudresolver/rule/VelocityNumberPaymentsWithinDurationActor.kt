@@ -3,7 +3,6 @@ package detekta.payment.fraudresolver.rule
 import co.paralleluniverse.actors.KotlinActorSupport
 import co.paralleluniverse.actors.behaviors.RequestMessage
 import co.paralleluniverse.actors.behaviors.RequestReplyHelper
-import co.paralleluniverse.fibers.Fiber
 import co.paralleluniverse.fibers.Suspendable
 import detekta.payment.fraudresolver.ResolveResult
 import detekta.payment.fraudresolver.repository.attemptedPaymentRel
@@ -21,7 +20,7 @@ class VelocityRequest(val customerCode: String,
 
 private val DEFAULT_WEIGHT = 2000.0
 
-class VelocityNumberPaymentWithinDurationActor(
+class VelocityNumberPaymentsWithinDurationActor(
         val neo4j: Neo4jFiberAware,
         val weight: Double = DEFAULT_WEIGHT) : KotlinActorSupport<Any, ResolveResult>() {
 
@@ -45,9 +44,7 @@ class VelocityNumberPaymentWithinDurationActor(
 
                         val calculatedWeight = if (payments.size > it.maxNumberPayments) weight else 0.0
 
-                        Fiber.sleep(1000)
-
-                        RequestReplyHelper.reply(it, ResolveResult(calculatedWeight, null))
+                        it.from.send(ResolveResult(calculatedWeight, null))
                     }
                     else -> null
                 }

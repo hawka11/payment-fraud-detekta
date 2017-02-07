@@ -1,32 +1,41 @@
 package detekta.payment.fraudresolver.customer
 
 import co.paralleluniverse.actors.BasicActor
+import co.paralleluniverse.actors.MessageProcessor
+import co.paralleluniverse.actors.behaviors.RequestReplyHelper
 import co.paralleluniverse.fibers.Suspendable
 import detekta.payment.fraudresolver.ResolveResult
+import detekta.payment.fraudresolver.aggregateResults
 import detekta.payment.fraudresolver.repository.fiber.Neo4jFiberAware
-import detekta.payment.fraudresolver.rule.VelocityNumberPaymentWithinDurationActor
+import detekta.payment.fraudresolver.rule.VelocityNumberPaymentsWithinDurationActor
 import detekta.payment.fraudresolver.rule.VelocityRequest
 
 class CustomerABCFraudCheckActor(neo4j: Neo4jFiberAware) : BasicActor<Any, ResolveResult>() {
 
-    private val ruleOne = VelocityNumberPaymentWithinDurationActor(neo4j, 1500.0).spawn()
-    private val ruleTwo = VelocityNumberPaymentWithinDurationActor(neo4j, 1200.0).spawn()
+    private val ruleOne = VelocityNumberPaymentsWithinDurationActor(neo4j, 1500.0).spawn()
+    private val ruleTwo = VelocityNumberPaymentsWithinDurationActor(neo4j, 1200.0).spawn()
 
-    private val initReceive = { it: Any ->
-        when (it) {
+    private var origReq: FraudCheck? = null
+
+    private val initReceive = { msg: Any ->
+        when (msg) {
             is FraudCheck -> {
-                ruleOne.send(VelocityRequest(it.customerCode, 5, it.duration))
-                ruleTwo.send(VelocityRequest(it.customerCode, 2, it.duration))
+                origReq = msg
+                ruleOne.send(VelocityRequest(msg.customerCode, 10, msg.duration))
+                ruleTwo.send(VelocityRequest(msg.customerCode, 2, msg.duration))
             }
             else -> null
         }
     }
 
-    private val waitingForResponses = { it: Any ->
-        when (it) {
-        //is ResolveResult -> {
-            else -> println("${System.currentTimeMillis()} -> $it")
-        //}
+    fun waitForResponses(resp: List<ResolveResult>, remaining: Int): MessageProcessor<Any, List<ResolveResult>> {
+        return MessageProcessor { msg: Any ->
+            if (remaining <= 0) resp else {
+                when (msg) {
+                    is ResolveResult -> receive(waitForResponses(resp + msg, remaining - 1))
+                    else -> receive(waitForResponses(resp, remaining))
+                }
+            }
         }
     }
 
@@ -35,8 +44,11 @@ class CustomerABCFraudCheckActor(neo4j: Neo4jFiberAware) : BasicActor<Any, Resol
 
         receive(initReceive)
 
-        while (true) {
-            receive(waitingForResponses)
-        }
+        val results = receive(waitForResponses(listOf(), 2))
+        val total = aggregateResults(results)
+
+        RequestReplyHelper.reply(origReq, total)
+
+        return total
     }
 }
