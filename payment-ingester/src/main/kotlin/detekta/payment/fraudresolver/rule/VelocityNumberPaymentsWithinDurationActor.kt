@@ -11,6 +11,9 @@ import detekta.payment.fraudresolver.repository.fiber.Neo4jFiberAware
 import detekta.payment.fraudresolver.repository.paymentNode
 import iot.jcypher.query.factories.clause.MATCH
 import iot.jcypher.query.factories.clause.RETURN
+import iot.jcypher.query.factories.clause.WHERE
+import iot.jcypher.query.writer.Format.PRETTY_1
+import printCypher
 import java.time.Duration
 
 class VelocityRequest(val customerCode: String,
@@ -31,13 +34,21 @@ class VelocityNumberPaymentsWithinDurationActor(
 
                 when (it) {
                     is VelocityRequest -> {
+
                         val res = neo4j.queryAndExecute { q ->
+                            val paymentNode = paymentNode()
+                            val customerNode = customerNode()
+
+                            val where = WHERE.valueOf(customerNode.property("code")).EQUALS(it.customerCode)
+                                    .AND().valueOf(paymentNode.property("createdAt")).GTE(1484722098)
+
                             q.setClauses(arrayOf(
-                                    MATCH.node(customerNode())
-                                            .property("code").value(it.customerCode)
-                                            .relation(attemptedPaymentRel()).node(paymentNode()),
+                                    MATCH.node(customerNode).relation(attemptedPaymentRel()).node(paymentNode),
+                                    where,
                                     RETURN.ALL()
                             ))
+
+                            printCypher(q, javaClass, PRETTY_1)
                         }
 
                         val payments = res.resultOf(paymentNode())
