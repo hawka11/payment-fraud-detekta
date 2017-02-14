@@ -11,6 +11,8 @@ fun main(args: Array<String>) {
     val neo4j = neo4jDb()
     val graph = Graph.create(neo4j)
 
+    neo4j.clearDatabase()
+
     LoadInitialNeo4jData().loadPayments(graph, mapper)
 }
 
