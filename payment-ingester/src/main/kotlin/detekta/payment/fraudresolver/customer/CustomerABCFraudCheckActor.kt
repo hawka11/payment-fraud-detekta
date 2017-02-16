@@ -21,8 +21,8 @@ class CustomerABCFraudCheckActor(neo4j: Neo4jFiberAware) : BasicActor<Any, Resol
         when (msg) {
             is FraudCheck -> {
                 origReq = msg
-                ruleOne.send(VelocityRequest(msg.customerCode, 10, msg.duration))
-                ruleTwo.send(VelocityRequest(msg.customerCode, 2, msg.duration))
+                ruleOne.send(VelocityRequest(msg.customerCode, 2, msg.start, msg.end))
+                ruleTwo.send(VelocityRequest(msg.customerCode, 2, msg.start, msg.end))
             }
             else -> null
         }
