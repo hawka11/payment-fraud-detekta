@@ -15,8 +15,9 @@
       - /neo4jdata/data:/data
       - /neo4jdata/logs:/logs
 
+#TODO: improve this.
 - pause:
-    seconds: 40
+    seconds: 180
 
 - name: Set neo4j password
   uri:
