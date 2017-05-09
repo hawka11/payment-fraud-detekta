@@ -29,6 +29,7 @@ class CustomerABCFraudCheckActor(neo4j: Neo4jFiberAware) : BasicActor<Any, Resol
     }
 
     //TODO: Nested / Recursive selective receive isn't working perfect, need to investigate...but this works
+    @Suspendable
     fun waitForResponses(resp: List<ResolveResult>, remaining: Int): MessageProcessor<Any, List<ResolveResult>> {
         return MessageProcessor { msg: Any ->
             when (msg) {
@@ -41,14 +42,13 @@ class CustomerABCFraudCheckActor(neo4j: Neo4jFiberAware) : BasicActor<Any, Resol
 
     @Suspendable
     override fun doRun(): ResolveResult {
+        while (true) {
+            receive(initReceive)
 
-        receive(initReceive)
+            val results = receive(waitForResponses(listOf(), 2))
+            val total = aggregateResults(results)
 
-        val results = receive(waitForResponses(listOf(), 2))
-        val total = aggregateResults(results)
-
-        RequestReplyHelper.reply(origReq, total)
-
-        return total
+            RequestReplyHelper.reply(origReq, total)
+        }
     }
 }

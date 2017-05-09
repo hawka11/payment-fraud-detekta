@@ -2,13 +2,19 @@ apply plugin: "kotlin"
 
 dependencies {
     compile(
+            "ch.qos.logback:logback-classic:1.2.3",
             "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}",
 
             "co.paralleluniverse:quasar-core:${quasarVersion}:jdk8",
             "co.paralleluniverse:quasar-actors:${quasarVersion}",
             "co.paralleluniverse:quasar-kotlin:${quasarVersion}",
+            "co.paralleluniverse:comsat-dropwizard:0.7.0",
+            "co.paralleluniverse:comsat-actors-api:0.7.0",
+            "co.paralleluniverse:comsat-actors-servlet:0.7.0",
             "co.paralleluniverse:galaxy:1.4",
 
+            "be.tomcools:dropwizard-websocket-jee7-bundle:1.1.0",
+            
             "net.iot-solutions.graphdb:jcypher:3.6.0",
             "com.fasterxml.jackson.core:jackson-core:2.8.6",
             "com.fasterxml.jackson.core:jackson-databind:2.8.6",
