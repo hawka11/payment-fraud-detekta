@@ -17,14 +17,16 @@ class Neo4jFiberAware(val neo4J: IDBAccess) {
     @Suspendable
     fun queryAndExecute(buildQuery: (q: JcQuery) -> Unit): JcQueryResult {
 
-        val query = JcQuery()
-
-        buildQuery(query)
-
         return object : Neo4jAsync() {
             override fun requestAsync() {
 
-                val f = executor.submit(Callable { neo4J.execute(query) })
+                val f = executor.submit(Callable {
+                    val query = JcQuery()
+
+                    buildQuery(query)
+
+                    neo4J.execute(query)
+                })
 
                 Futures.addCallback(f, object : FutureCallback<JcQueryResult> {
                     override fun onFailure(t: Throwable): Unit = failure(t)
