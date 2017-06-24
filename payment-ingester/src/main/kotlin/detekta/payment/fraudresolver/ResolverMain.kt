@@ -4,7 +4,7 @@ import co.paralleluniverse.actors.behaviors.RequestReplyHelper
 import detekta.payment.fraudresolver.customer.CustomerABCFraudCheckActor
 import detekta.payment.fraudresolver.customer.FraudCheck
 import detekta.payment.fraudresolver.repository.fiber.Neo4jFiberAware
-import detekta.payment.ingester.neo4jDb
+import detekta.payment.cypher.neo4jDb
 import java.time.OffsetDateTime
 import java.time.ZoneOffset.UTC
 

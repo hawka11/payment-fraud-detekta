@@ -14,5 +14,7 @@ data class PaymentResult @JsonCreator constructor(
         val ipAddress: String,
         val token: String,
         val accountRef: String,
-        val correlationId: String
+        val correlationId: String,
+        val latitude: String,
+        val longitude: String
 )

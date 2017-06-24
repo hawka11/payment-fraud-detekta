@@ -3,7 +3,7 @@ package detekta.payment.map
 import co.paralleluniverse.galaxy.Messenger
 import co.paralleluniverse.galaxy.Store
 import co.paralleluniverse.strands.Strand
-import detekta.payment.ingester.objectMapper
+import detekta.payment.cypher.objectMapper
 import org.slf4j.LoggerFactory
 
 data class TreeNode<V>(

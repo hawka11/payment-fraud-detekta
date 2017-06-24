@@ -1,4 +1,4 @@
-package detekta.payment.ingester
+package detekta.payment.cypher
 
 import iot.jcypher.database.DBAccessFactory
 import iot.jcypher.database.DBProperties

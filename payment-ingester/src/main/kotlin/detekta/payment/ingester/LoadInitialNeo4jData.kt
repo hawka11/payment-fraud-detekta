@@ -2,6 +2,8 @@ package detekta.payment.ingester
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import detekta.payment.cypher.neo4jDb
+import detekta.payment.cypher.objectMapper
 import iot.jcypher.graph.GrNode
 import iot.jcypher.graph.Graph
 
@@ -58,6 +60,8 @@ class LoadInitialNeo4jData {
             tokenNode.addProperty("createdAt", r.createdAt)
             tokenNode.addProperty("unitAmount", r.unitAmount)
             tokenNode.addProperty("correlationId", r.correlationId)
+            tokenNode.addProperty("latitude", r.latitude)
+            tokenNode.addProperty("longitude", r.longitude)
 
             paymentNodeById[r.correlationId] = tokenNode
         }

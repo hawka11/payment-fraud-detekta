@@ -11,7 +11,9 @@
     "ipAddress": "134.294.2.1",
     "token": "bd7210ce-dd49-11e6-bf26-cec0c932ce01",
     "accountRef": "c72a79d0-dd49-11e6-bf26-cec0c932ce01",
-    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce10"
+    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce10",
+    "latitude": "29.42389",
+    "longitude": "-98.49333"
   },
   {
     "createdAt": "1474752497",
@@ -25,7 +27,9 @@
     "ipAddress": "134.294.2.2",
     "token": "bd7210ce-dd49-11e6-bf26-cec0c932ce02",
     "accountRef": "c72a79d0-dd49-11e6-bf26-cec0c932ce01",
-    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce02"
+    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce02",
+    "latitude": "41.46444",
+    "longitude": "-81.50889"
   },
   {
     "createdAt": "1474752497",
@@ -39,7 +43,9 @@
     "ipAddress": "134.294.2.3",
     "token": "bd7210ce-dd49-11e6-bf26-cec0c932ce03",
     "accountRef": "c72a79d0-dd49-11e6-bf26-cec0c932ce01",
-    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce03"
+    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce03",
+    "latitude": "40.63667",
+    "longitude": "-74.15917"
   },
   {
     "createdAt": "1474752497",
@@ -53,7 +59,9 @@
     "ipAddress": "134.294.2.4",
     "token": "bd7210ce-dd49-11e6-bf26-cec0c932ce04",
     "accountRef": "c72a79d0-dd49-11e6-bf26-cec0c932ce01",
-    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce04"
+    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce04",
+    "latitude": "30.66944",
+    "longitude": "-81.46278"
   },
   {
     "createdAt": "1474752599",
@@ -67,7 +75,9 @@
     "ipAddress": "134.294.2.4",
     "token": "bd7210ce-dd49-11e6-bf26-cec0c932ce04",
     "accountRef": "c72a79d0-dd49-11e6-bf26-cec0c932ce02",
-    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce01"
+    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce01",
+    "latitude": "25.2097222",
+    "longitude": "55.2477778"
   },
   {
     "createdAt": "1487225269000",
@@ -81,7 +91,9 @@
     "ipAddress": "134.294.2.5",
     "token": "bd7210ce-dd49-11e6-bf26-cec0c932ce05",
     "accountRef": "c72a79d0-dd49-11e6-bf26-cec0c932ce01",
-    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce09"
+    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce09",
+    "latitude": "50.7166667",
+    "longitude": "-113.9666667"
   },
   {
     "createdAt": "1487225289000",
@@ -95,6 +107,8 @@
     "ipAddress": "134.294.2.5",
     "token": "bd7210ce-dd49-11e6-bf26-cec0c932ce05",
     "accountRef": "c72a79d0-dd49-11e6-bf26-cec0c932ce01",
-    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce06"
+    "correlationId": "ca547714-dd49-11e6-bf26-cec0c932ce06",
+    "latitude": "50.8333333",
+    "longitude": "4.3333333"
   }
 ]

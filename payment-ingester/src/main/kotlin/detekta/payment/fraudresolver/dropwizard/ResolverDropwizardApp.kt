@@ -7,7 +7,7 @@ import co.paralleluniverse.fibers.dropwizard.FiberApplication
 import detekta.payment.fraudresolver.api.ResolveResource
 import detekta.payment.fraudresolver.customer.CustomerABCFraudCheckActor
 import detekta.payment.fraudresolver.repository.fiber.Neo4jFiberAware
-import detekta.payment.ingester.neo4jDb
+import detekta.payment.cypher.neo4jDb
 import io.dropwizard.Configuration
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
